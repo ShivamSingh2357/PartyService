@@ -1,0 +1,46 @@
+name: CD Pipeline
+
+on:
+  workflow_run:
+    workflows: ["CI Pipeline"]
+    types:
+      - completed
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+
+    steps:
+      - name: Debug Trigger Info
+        run: |
+          echo "Triggered by workflow name: ${{ github.event.workflow_run.name }}"
+          echo "Triggered by run ID: ${{ github.event.workflow_run.id }}"
+
+      - name: Download JAR artifact from the CI pipeline
+        uses: dawidd6/action-download-artifact@v3
+        with:
+          workflow: ci.yml
+          name: PartyService
+          run_id: ${{ github.event.workflow_run.id }}
+          path: artifact/
+
+      - name: Copy JAR to EC2 server
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER  }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          source: "artifact/*.jar"
+          target: "/home/ec2-user/app"
+
+      - name: Restart Spring Boot application on EC2
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USER }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          script: |
+            sudo systemctl daemon-reload
+            sudo systemctl restart PartyService
