@@ -40,7 +40,6 @@ public class PartyController implements PartyApi {
 
     @Override
     public ServiceResponse<PartyResponse> updateParty(Long id, ServiceRequest<PartyRequest> request) {
-
         try {
             log.info("Received request to update party with id: {}", id);
             PartyRequest partyRequest = request.getPartyData();
@@ -51,6 +50,23 @@ public class PartyController implements PartyApi {
         } catch (Exception e) {
             log.error("Failed to update party: {}", e.getMessage(), e);
             throw new ServiceException("Unable to update party");
+        }
+    }
+
+    @Override
+    public ServiceResponse<PartyResponse> getPartyByCustId(Long custId) {
+
+        try {
+            log.info("Received request to get party with custId: {}", custId);
+            if (custId == null) {
+                throw new ValidationException("Customer ID is required");
+            }
+            PartyResponse partyResponse = partyService.getPartyByCustId(custId);
+            log.info("Party retrieved successfully with custId: {}", custId);
+            return ServiceResponse.success(partyResponse, "Party retrieved successfully");
+        } catch (Exception e) {
+            log.error("Failed to retrieve party: {}", e.getMessage(), e);
+            throw new ServiceException("Unable to retrieve party");
         }
     }
 

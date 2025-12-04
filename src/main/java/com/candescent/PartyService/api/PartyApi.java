@@ -87,4 +87,36 @@ public interface PartyApi {
             @PathVariable("id") Long id,
             @RequestBody ServiceRequest<PartyRequest> request
     );
+
+    @Operation(
+            summary = "Get party by customer ID",
+            description = "Retrieves a party (customer) record by customer ID"
+    )
+    @ApiResponses(value = {
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "Party retrieved successfully",
+                    content = @Content(
+                            mediaType = "application/json",
+                            schema = @Schema(implementation = ServiceResponse.class)
+                    )
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "Invalid customer ID",
+                    content = @Content(mediaType = "application/json")
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = "Party not found",
+                    content = @Content(mediaType = "application/json")
+            ),
+            @ApiResponse(
+                    responseCode = "500",
+                    description = "Internal server error",
+                    content = @Content(mediaType = "application/json")
+            )
+    })
+    @GetMapping("/customer/{custId}")
+    ServiceResponse<PartyResponse> getPartyByCustId(@PathVariable("custId") Long custId);
 }
