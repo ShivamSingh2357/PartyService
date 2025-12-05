@@ -39,13 +39,13 @@ public class PartyController implements PartyApi {
     }
 
     @Override
-    public ServiceResponse<PartyResponse> updateParty(Long id, ServiceRequest<PartyRequest> request) {
+    public ServiceResponse<PartyResponse> updateParty(Long custId, ServiceRequest<PartyRequest> request) {
         try {
-            log.info("Received request to update party with id: {}", id);
+            log.info("Received request to update party with custId: {}", custId);
             PartyRequest partyRequest = request.getPartyData();
             validatePartyRequest(partyRequest);
-            PartyResponse partyResponse = partyService.updateParty(id, partyRequest);
-            log.info("Party updated successfully with id: {}", partyResponse.getId());
+            PartyResponse partyResponse = partyService.updateParty(custId, partyRequest);
+            log.info("Party updated successfully with custId: {}", partyResponse.getId());
             return ServiceResponse.success(partyResponse, "Party updated successfully");
         } catch (Exception e) {
             log.error("Failed to update party: {}", e.getMessage(), e);
@@ -79,9 +79,6 @@ public class PartyController implements PartyApi {
 
         if (request == null) {
             throw new ValidationException("Party request cannot be null");
-        }
-        if (request.getCustId() == null) {
-            throw new ValidationException("Customer ID is required");
         }
         if (request.getCustFirstName() == null || request.getCustFirstName().trim().isEmpty()) {
             throw new ValidationException("First name is required");

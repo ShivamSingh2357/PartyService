@@ -17,9 +17,6 @@ import lombok.NoArgsConstructor;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class PartyRequest {
 
-    @JsonProperty("custId")
-    private Long custId;
-
     @JsonProperty("custFirstName")
     private String custFirstName;
 

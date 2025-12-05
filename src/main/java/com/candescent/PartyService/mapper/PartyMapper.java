@@ -23,7 +23,6 @@ public class PartyMapper {
             return null;
         }
         return PartyEntity.builder()
-                .custId(request.getCustId())
                 .custFirstName(request.getCustFirstName())
                 .custLastName(request.getCustLastName())
                 .emailId(request.getEmailId())
@@ -44,7 +43,6 @@ public class PartyMapper {
         }
         return PartyResponse.builder()
                 .id(String.valueOf(entity.getId()))
-                .custId(entity.getCustId())
                 .custFirstName(entity.getCustFirstName())
                 .custLastName(entity.getCustLastName())
                 .emailId(entity.getEmailId())
@@ -62,9 +60,6 @@ public class PartyMapper {
 
         if (entity == null || request == null) {
             return;
-        }
-        if (request.getCustId() != null) {
-            entity.setCustId(request.getCustId());
         }
         if (request.getCustFirstName() != null) {
             entity.setCustFirstName(request.getCustFirstName());

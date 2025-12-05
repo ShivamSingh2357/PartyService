@@ -31,7 +31,7 @@ public class PartyService {
      */
     @Transactional
     public PartyResponse createParty(PartyRequest request) {
-        log.info("Creating party with custId: {}", request.getCustId());
+        log.info("Creating party");
         PartyEntity entity = partyMapper.toEntity(request);
         PartyEntity savedEntity = partyRepository.save(entity);
         log.info("Party created successfully with id: {}", savedEntity.getId());
@@ -51,12 +51,6 @@ public class PartyService {
         log.info("Updating party with id: {}", id);
         PartyEntity existingEntity = partyRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Party not found with id: " + id));
-        // Check for conflicts with custId
-        if (!existingEntity.getCustId().equals(request.getCustId())) {
-            if (partyRepository.existsByCustId(request.getCustId())) {
-                throw new ConflictException("Party with custId " + request.getCustId() + " already exists");
-            }
-        }
         // Check for conflicts with emailId
         if (!existingEntity.getEmailId().equals(request.getEmailId())) {
             if (partyRepository.existsByEmailId(request.getEmailId())) {
@@ -70,25 +64,6 @@ public class PartyService {
     }
 
     /**
-     * Get party by ID.
-     *
-     * @param id the party ID
-     * @return the party response
-     */
-    @Transactional(readOnly = true)
-    public PartyResponse getPartyById(Long id) {
-        log.debug("Fetching party with id: {}", id);
-
-        PartyEntity entity = partyRepository.findById(id)
-                .orElseThrow(() -> {
-                    log.error("Party not found with id: {}", id);
-                    return new ResourceNotFoundException("Party not found with id: " + id);
-                });
-
-        return partyMapper.toResponse(entity);
-    }
-
-    /**
      * Get party by customer ID.
      *
      * @param custId the customer ID
@@ -98,7 +73,7 @@ public class PartyService {
     public PartyResponse getPartyByCustId(Long custId) {
         log.debug("Fetching party with custId: {}", custId);
 
-        PartyEntity entity = partyRepository.findByCustId(custId)
+        PartyEntity entity = partyRepository.findById(custId)
                 .orElseThrow(() -> {
                     log.error("Party not found with custId: {}", custId);
                     return new ResourceNotFoundException("Party not found with custId: " + custId);

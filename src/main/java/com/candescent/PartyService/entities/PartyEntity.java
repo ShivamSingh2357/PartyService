@@ -16,19 +16,16 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 public class PartyEntity extends BaseEntity {
 
-    @Column(name = "cust_id", nullable = false)
-    private Long custId;
-
     @Column(name = "cust_first_name", nullable = false, length = 100)
     private String custFirstName;
 
     @Column(name = "cust_last_name", nullable = false, length = 100)
     private String custLastName;
 
-    @Column(name = "email_id", nullable = false, length = 255)
+    @Column(name = "email_id", nullable = false, length = 255, unique = true)
     private String emailId;
 
-    @Column(name = "phone_no", nullable = false, length = 20)
+    @Column(name = "phone_no", nullable = false, length = 20, unique = true)
     private String phoneNo;
 }
 

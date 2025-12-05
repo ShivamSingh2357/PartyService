@@ -20,9 +20,6 @@ public class PartyResponse {
     @JsonProperty("id")
     private String id;
 
-    @JsonProperty("custId")
-    private Long custId;
-
     @JsonProperty("custFirstName")
     private String custFirstName;
 
